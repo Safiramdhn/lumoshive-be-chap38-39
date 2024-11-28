@@ -18,16 +18,16 @@ type ShippingCourierService interface {
 }
 
 type shippingCourierService struct {
-	Repo repository.ShippingCourierRepository
+	Repo repository.MainRepository
 }
 
 func NewShippingCourierService(db *gorm.DB) ShippingCourierService {
-	return &shippingCourierService{Repo: repository.NewShippingCourierRepository(db)}
+	return &shippingCourierService{Repo: repository.NewMainRepository(db)}
 }
 
 // GetAllShippings implements ShippingService.
 func (s *shippingCourierService) GetAllShippings() ([]model.ShippingCourier, error) {
-	return s.Repo.GetAll()
+	return s.Repo.ShippingCourierRepository.GetAll()
 }
 
 // GetShippingById implements ShippingService.
@@ -35,12 +35,12 @@ func (s *shippingCourierService) GetShippingById(id int) (*model.ShippingCourier
 	if id == 0 {
 		return nil, errors.New("id cannot be 0")
 	}
-	return s.Repo.GetByID(id)
+	return s.Repo.ShippingCourierRepository.GetByID(id)
 }
 
 func (s *shippingCourierService) CalculateShippingCost(costReq model.ShippingCostRequest) (*model.ShippingCostResponse, error) {
 	log.Printf("Debug: Get calculation for shipping distance: origin: %s - destination: %s", costReq.OriginLatLong, costReq.DestinationLatLong)
-	distance, err := s.Repo.CalculateShippingCost(costReq)
+	distance, err := s.Repo.ShippingCourierRepository.CalculateShippingCost(costReq)
 	if err != nil {
 		return nil, err
 	}

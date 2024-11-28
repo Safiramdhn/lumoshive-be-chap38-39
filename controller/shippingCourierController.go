@@ -12,15 +12,15 @@ import (
 )
 
 type ShippingCourierController struct {
-	Service service.ShippingCourierService
+	Service service.MainService
 }
 
 func NewShippingCourierController(db *gorm.DB) ShippingCourierController {
-	return ShippingCourierController{Service: service.NewShippingCourierService(db)}
+	return ShippingCourierController{Service: service.NewMainService(db)}
 }
 
 func (c ShippingCourierController) GetAllShippingCourierController(ctx *gin.Context) {
-	shippingList, err := c.Service.GetAllShippings()
+	shippingList, err := c.Service.ShippingCourierService.GetAllShippings()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error getting shipping list": err.Error()})
 	}
@@ -38,7 +38,7 @@ func (c ShippingCourierController) GetShippingCourierByIdController(ctx *gin.Con
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 		return
 	}
-	shipping, err := c.Service.GetShippingById(shippingId)
+	shipping, err := c.Service.ShippingCourierService.GetShippingById(shippingId)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error getting shipping": err.Error()})
 	}
@@ -77,7 +77,7 @@ func (c ShippingCourierController) GetShippingCostController(ctx *gin.Context) {
 	}
 
 	log.Printf("Debug: Get calculation for shipping cost")
-	shippingCost, err := c.Service.CalculateShippingCost(input)
+	shippingCost, err := c.Service.ShippingCourierService.CalculateShippingCost(input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error calculating shipping cost": err.Error()})
 		return

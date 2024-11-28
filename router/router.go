@@ -32,5 +32,12 @@ func registerShippingCourierRoutes(router *gin.Engine, ctx infra.ServiceContext)
 }
 
 func registerShippingRoutes(router *gin.Engine, ctx infra.ServiceContext) {
-	router.POST("/shipping", ctx.Ctl.ShippingController.CreateShippingController)
+	shippingGroup := router.Group("/shipping")
+
+	shippingGroup.POST("/", ctx.Ctl.ShippingController.CreateShippingController)
+	shippingGroup.GET("/:id", ctx.Ctl.ShippingController.GetShippingByID)
+
+	historyGroup := shippingGroup.Group("/history")
+	historyGroup.POST("/:shipping_id", ctx.Ctl.ShippingHistoryController.UpdateShippingHistoryController)
+	historyGroup.GET("/:shipping_id", ctx.Ctl.ShippingHistoryController.GetShippingHistoryController)
 }
